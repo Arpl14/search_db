@@ -23,7 +23,7 @@ def fuzzy_filter(df, column, search_term, limit=10):
     matched_values = [match[0] for match in matches if match[1] > 50]
 
     # Use these matched values to filter the entire DataFrame
-    filtered_df = df[df[column].isin(matched_values)]
+    filtered_df = df[df[column].str.contains('|'.join(matched_values), case=False, na=False)]
 
     return filtered_df
 
