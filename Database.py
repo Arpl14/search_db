@@ -13,9 +13,9 @@ def fuzzy_filter(df, column, search_term, limit=10):
     """
     if not search_term:
         return df
-    matches = process.extract(search_term, df[column], limit=limit)
-    matched_indices = [df.index[df[column] == match[0]][0] for match in matches if match[1] > 50]  # Threshold of 50
-    return df.loc[matched_indices]
+    matches = process.extract(search_term, df[column].unique(), limit=limit)  # Ensure unique matches
+    matched_values = [match[0] for match in matches if match[1] > 50]  # Filter by threshold
+    return df[df[column].isin(matched_values)]  # Return all rows with matching values
 
 
 def main():
