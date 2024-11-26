@@ -14,11 +14,11 @@ def fuzzy_filter(df, column, search_term, limit=10):
     """
     if not search_term:
         return df
-    # Get matches based on unique values in the column
+    # Get matches from the column
     matches = process.extract(search_term, df[column].dropna().unique(), limit=limit)
     # Extract matched values that pass the threshold
     matched_values = [match[0] for match in matches if match[1] > 50]
-    # Return all rows where the column matches any of the matched values
+    # Filter the DataFrame to include all rows with matching values in the column
     return df[df[column].isin(matched_values)]
 
 
