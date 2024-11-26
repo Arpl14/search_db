@@ -10,12 +10,16 @@ df = pd.read_excel("ICAM_2023_2022_2021.xlsx")
 def fuzzy_filter(df, column, search_term, limit=10):
     """
     Perform fuzzy search on a specific column of the DataFrame.
+    Return all rows that match the search term based on fuzzy matching.
     """
     if not search_term:
         return df
-    matches = process.extract(search_term, df[column].unique(), limit=limit)  # Ensure unique matches
-    matched_values = [match[0] for match in matches if match[1] > 50]  # Filter by threshold
-    return df[df[column].isin(matched_values)]  # Return all rows with matching values
+    # Get matches based on unique values in the column
+    matches = process.extract(search_term, df[column].dropna().unique(), limit=limit)
+    # Extract matched values that pass the threshold
+    matched_values = [match[0] for match in matches if match[1] > 50]
+    # Return all rows where the column matches any of the matched values
+    return df[df[column].isin(matched_values)]
 
 
 def main():
