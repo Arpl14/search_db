@@ -4,6 +4,7 @@ from fuzzywuzzy import process
 import Levenshtein  # Ensures fuzzywuzzy uses python-Levenshtein for better performance
 
 
+# Load the dataset
 df = pd.read_excel("ICAM_2023_2022_2021.xlsx")
 
 
@@ -14,12 +15,15 @@ def fuzzy_filter(df, column, search_term, limit=10):
     """
     if not search_term:
         return df
-    # Get matches from the column
+
+    # Perform fuzzy matching on the unique values in the column
     matches = process.extract(search_term, df[column].dropna().unique(), limit=limit)
-    # Extract matched values that pass the threshold
+
+    # Extract all matching values with a threshold > 50
     matched_values = [match[0] for match in matches if match[1] > 50]
-    # Filter the DataFrame to include all rows with matching values in the column
-    return df[df[column].isin(matched_values)]
+
+    # Filter the dataframe to include all rows that have matching values
+    return df[df[column].str.contains('|'.join(matched_values), case=False, na=False)]
 
 
 def main():
